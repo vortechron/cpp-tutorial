@@ -125,9 +125,7 @@ void displayAllNode()
 
 		temp = temp->next;
 	}
-
-	free(temp);
-
+	
 	printf("NULL\n\n");
 }
 
@@ -159,7 +157,7 @@ void addEnd()
 	scanf("%s", newNode->name);
 
 	// we do a simple check to see if our head
-	// is empty then we assign new node to it.
+	// is empty
 	if(head == NULL){
 		head = newNode;
 		head->next = NULL;
@@ -177,8 +175,6 @@ void addEnd()
 
 		temp = temp->next;
 	}
-
-
 }
 
 void deleteBegin()
@@ -233,6 +229,12 @@ void deleteAnywhere()
 	// get the name of student that we want to delete
 	printf("Insert student that you want to delete: ");
 	scanf("%s", &name);
+	
+	if(strcmp(name, head->name) == 0){
+		printf("Student found and deleted! first\n");
+		head = head->next;
+		return;
+	}
 
 	// then we will call this function recursively
 	// until it find the name
@@ -247,18 +249,8 @@ void deleteRecursively(student *prev, student *temp, char searchedName[])
 		printf("Student not found\n");
 
 	}else if(strcmp(searchedName, temp->name) == 0){
-
-		// this section will be executed when the student is found on the list
 		
 		printf("Student found and deleted!\n");
-
-		// do a simple check to see if temp is same as head
-		if(temp == head)
-		{
-			head = temp->next;
-			temp->next = NULL;
-			return;
-		}
 
 		// else we will assign prev ptr to its second next node,
 		// not first next node. we will skip first next node because its
@@ -275,12 +267,7 @@ void deleteRecursively(student *prev, student *temp, char searchedName[])
 
 void deleteTraversaly(student *prev, student *temp, char searchedName[])
 {
-	if(strcmp(searchedName, head->name) == 0){
-		printf("Student found and deleted! first\n");
-		head = head->next;
-		return;
-	}
-	
+	// traverse each node and do the check
 	while(temp != NULL){
 		if(strcmp(searchedName, temp->name) == 0){
 			printf("Student found and deleted!\n");
@@ -291,4 +278,6 @@ void deleteTraversaly(student *prev, student *temp, char searchedName[])
 		prev = temp;
 		temp = temp->next;
 	}
+	
+	printf("Student not found\n");
 }

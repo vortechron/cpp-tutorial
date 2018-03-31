@@ -1,6 +1,8 @@
 # cpp-tutorial
 Collections of simple c++ program for you to get started.
 
+Feel free to contribute in this repo. :)
+
 ### Tips
 
 + You forgot to declare the variable.

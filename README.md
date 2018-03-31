@@ -2,7 +2,6 @@
 Collections of simple c++ program for you to get started.
 
 ### Tips
-________
 
 + You forgot to declare the variable.
 

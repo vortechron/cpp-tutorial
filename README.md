@@ -24,15 +24,3 @@ Collections of simple c++ program for you to get started.
 + You forgot a semicolon, probably at the end of a class declaration.
 
 
-### THE USUAL C++ HEADER FILES
-In C++, a header file holds forward declarations of identifiers. Here are some of the most common C++ header files that you’ll be using, along with their correct spellings. These aren’t by any means all of them, but they are the most common:
-
-+ Include <string> if you’re going to be using the string class.
-
-+ Include <iostream> when you want to use cout and cin.
-
-+ Include <fstream> when you want to read or write files.
-
-+ Include <iomanip> if you want advanced manipulator usage in your streams.
-
-+ Include <stdlib.h> for general operations, including system(“PAUSE”).

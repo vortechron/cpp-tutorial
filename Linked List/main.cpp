@@ -17,7 +17,7 @@ void deleteBegin();
 void deleteEnd();
 void deleteAnywhere();
 void deleteRecursively(student *prev, student *temp, char searchedName[]);
-void traversalDelete(student *prev, student *current, char searchedName[]);
+void deleteTraversaly(student *prev, student *current, char searchedName[]);
 void displayAllNode();
 void createStudents();
 
@@ -191,10 +191,6 @@ void deleteBegin()
 
 	// else move head to next node
 	head = temp->next;
-
-	// then we break the chain by assiging it
-	// to null
-	
 }
 
 void deleteEnd()
@@ -238,7 +234,7 @@ void deleteAnywhere()
 
 	// then we will call this function recursively
 	// until it find the name
-	traversalDelete(prev, temp, name); // method: 1
+	deleteTraversaly(prev, temp, name); // method: 1
 	// deleteRecursively(prev, temp, name); // method: 2
 }
 
@@ -270,15 +266,12 @@ void deleteRecursively(student *prev, student *temp, char searchedName[])
 		return;
 
 	}else{
-
 		// call this function again but different head and prev
-
 		deleteRecursively(temp, temp->next, searchedName);
-
 	}
 }
 
-void traversalDelete(student *prev, student *temp, char searchedName[])
+void deleteTraversaly(student *prev, student *temp, char searchedName[])
 {
 	if(strcmp(searchedName, head->name) == 0){
 		printf("Student found and deleted! first\n");
@@ -287,7 +280,6 @@ void traversalDelete(student *prev, student *temp, char searchedName[])
 	}
 	
 	while(temp != NULL){
-		
 		if(strcmp(searchedName, temp->name) == 0){
 			printf("Student found and deleted!\n");
 			prev->next = temp->next;

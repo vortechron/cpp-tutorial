@@ -72,14 +72,16 @@ int main(int argc, char** argv) {
 
 void printMenu()
 {
-	printf("\nMenu\n");
-	printf("\n1. Add begin");
-	printf("\n2. Add end");
-	printf("\n3. Delete begin");
-	printf("\n4. Delete end");
-	printf("\n5. Delete anywhere");
-	printf("\n6. End");
-	printf("\n\nChoose a menu: ");
+	printf(
+		"\nMenu\n"
+		"\n1. Add begin"
+		"\n2. Add end"
+		"\n3. Delete begin"
+		"\n4. Delete end"
+		"\n5. Delete anywhere"
+		"\n6. End"
+		"\n\nChoose a menu: "
+	);
 }
 
 void createStudents()

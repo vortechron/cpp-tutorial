@@ -1,6 +1,6 @@
-#include <iostream>
-#include <stdlib.h>
-#include <string.h>
+#include <iostream> // to use cin or cout
+#include <stdlib.h> // general library
+#include <string.h> // to use string related function
 
 struct student
 {
@@ -8,8 +8,10 @@ struct student
 	struct student *next;
 };
 
+// initialize global variable
 student *head = NULL;
 
+// Function prototype (declaration)
 void printMenu();
 void addBegin();
 void addEnd();
@@ -109,7 +111,6 @@ void createStudents()
 
 void displayAllNode()
 {
-	
 	// always create temporary node
 	// and assign head ptr to it
 	student *temp = head;
@@ -156,8 +157,7 @@ void addEnd()
 	printf("Insert student name: ");
 	scanf("%s", newNode->name);
 
-	// we do a simple check to see if our head
-	// is empty
+	// we do a simple check to see if our head is empty
 	if(head == NULL){
 		head = newNode;
 		head->next = NULL;
@@ -189,14 +189,16 @@ void deleteBegin()
 
 	// else move head to next node
 	head = temp->next;
+	
+	// deallocate
+	free(temp);
 }
 
 void deleteEnd()
 {
 	student *temp = head;
 
-	// simple check to see if node if empty adn exit
-	// this function
+	// simple check to see if node if empty adn exit this function
 	if(head == NULL){
 		return;
 	}
@@ -237,7 +239,8 @@ void deleteAnywhere()
 	}
 
 	// then we will call this function recursively
-	// until it find the name
+	// until it find the name, you can comment out 
+	// any method that you want to use.
 	deleteTraversaly(prev, temp, name); // method: 1
 	// deleteRecursively(prev, temp, name); // method: 2
 }

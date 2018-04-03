@@ -5,6 +5,12 @@
 struct student
 {
 	char name[100];
+	
+	struct extra{
+		int score;
+	};
+	extra info;
+	
 	struct student *next;
 };
 
@@ -22,6 +28,8 @@ void deleteRecursively(student *prev, student *temp, char searchedName[]);
 void deleteTraversaly(student *prev, student *current, char searchedName[]);
 void displayAllNode();
 void createStudents();
+void sortAscending();
+void sortDescending();
 
 int main(int argc, char** argv) {
 
@@ -57,6 +65,14 @@ int main(int argc, char** argv) {
 				displayAllNode();
 				break;
 			case 6:
+				sortAscending();
+				displayAllNode();
+				break;
+			case 7:
+				sortDescending();
+				displayAllNode();
+				break;
+			case 0:
 				printf("Thank you :)\nExiting...");
 				break;
 			default:
@@ -64,7 +80,7 @@ int main(int argc, char** argv) {
 				break;
 		}
 
-		if(choice == 6){
+		if(choice == 0){
 			break;
 		}
 	}
@@ -81,7 +97,9 @@ void printMenu()
 		"\n3. Delete begin"
 		"\n4. Delete end"
 		"\n5. Delete anywhere"
-		"\n6. End"
+		"\n6. Sort ascending"
+		"\n7. Sort descending"
+		"\n0. End"
 		"\n\nChoose a menu: "
 	);
 }
@@ -103,7 +121,7 @@ void createStudents()
 		// create new student
 		// we just call addEnd function.
 		// p/s: you also can use addbegin
-		addEnd();
+		addBegin();
 	}
 
 	displayAllNode();
@@ -122,7 +140,7 @@ void displayAllNode()
 	// the sole purpose of head pointer is to point at the first node.
 	// thats why we always assign head to new pointer
 	while(temp != NULL){
-		printf("%s--->", temp->name);
+		printf("%s | %d--->", temp->name, temp->info.score);
 
 		temp = temp->next;
 	}
@@ -138,6 +156,9 @@ void addBegin()
 	// then we assign name into empty node
 	printf("Insert student name: ");
 	scanf("%s", newNode->name);
+	
+	printf("Insert score: ");
+	scanf("%d", &newNode->info.score);
 
 	// this will put new node at the front
 	newNode->next = head;
@@ -156,6 +177,9 @@ void addEnd()
 
 	printf("Insert student name: ");
 	scanf("%s", newNode->name);
+	
+	printf("Insert score: ");
+	scanf("%d", &newNode->info.score);
 
 	// we do a simple check to see if our head is empty
 	if(head == NULL){
@@ -283,4 +307,48 @@ void deleteTraversaly(student *prev, student *temp, char searchedName[])
 	}
 	
 	printf("Student not found\n");
+}
+
+void sortAscending()
+{
+	student *i = head,*j =head;
+	
+    while(i!=NULL){
+        while(j->next!=NULL){
+            if(j->info.score > j->next->info.score){
+            	student temp = *j;
+            	
+                j->info.score = j->next->info.score;
+                strcpy(j->name, j->next->name);
+                
+                j->next->info.score = temp.info.score;
+                strcpy(j->next->name, temp.name);
+            }
+            j=j->next;
+        }
+        j=head;
+        i=i->next;
+    }
+}
+
+void sortDescending()
+{
+	student *i = head,*j =head;
+	
+    while(i!=NULL){
+        while(j->next!=NULL){
+            if(j->info.score < j->next->info.score){
+            	student temp = *j;
+            	
+                j->info.score = j->next->info.score;
+                strcpy(j->name, j->next->name);
+                
+                j->next->info.score = temp.info.score;
+                strcpy(j->next->name, temp.name);
+            }
+            j=j->next;
+        }
+        j=head;
+        i=i->next;
+    }
 }

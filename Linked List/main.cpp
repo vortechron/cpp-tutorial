@@ -8,8 +8,7 @@ struct student
 	
 	struct extra{
 		int score;
-	};
-	extra info;
+	}info;
 	
 	struct student *next;
 };
@@ -174,31 +173,28 @@ void addEnd()
 	// explained at above docs
 	student *temp = head;
 	student *newNode = (student *) malloc(sizeof(student));
+	
+	// we do a simple check to see if our head is empty
+	if(head == NULL){
+		addBegin();
+		return;
+	}
 
 	printf("Insert student name: ");
 	scanf("%s", newNode->name);
 	
 	printf("Insert score: ");
 	scanf("%d", &newNode->info.score);
-
-	// we do a simple check to see if our head is empty
-	if(head == NULL){
-		head = newNode;
-		head->next = NULL;
-		return;
-	}
+	
+	newNode->next = NULL;
 
 	// else we will traverse each nodes with temporary ptn
 	// and check: if it reach last node then assign new node to it next ptr
-	while(temp != NULL){
-
-		if(temp->next == NULL){
-			temp->next = newNode;
-			return;
-		}
-
+	while(temp->next != NULL){
 		temp = temp->next;
 	}
+	
+	temp->next = newNode;
 }
 
 void deleteBegin()
@@ -311,7 +307,7 @@ void deleteTraversaly(student *prev, student *temp, char searchedName[])
 
 void sortAscending()
 {
-	student *i = head,*j =head;
+    student *i = head,*j =head;
 	
     while(i!=NULL){
         while(j->next!=NULL){
@@ -333,7 +329,7 @@ void sortAscending()
 
 void sortDescending()
 {
-	student *i = head,*j =head;
+    student *i = head,*j =head;
 	
     while(i!=NULL){
         while(j->next!=NULL){

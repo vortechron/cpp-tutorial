@@ -308,10 +308,13 @@ void deleteTraversaly(student *prev, student *temp, char searchedName[])
 void sortAscending()
 {
     student *i = head,*j =head;
-	
+
+	// i is to loop for n-number of node only
     while(i!=NULL){
+    	// j is to loop or each loop and compare it with the next node
         while(j->next!=NULL){
             if(j->info.score > j->next->info.score){
+            	// swap the data if prev is larger than next
             	student temp = *j;
             	
                 j->info.score = j->next->info.score;
@@ -326,6 +329,7 @@ void sortAscending()
         i=i->next;
     }
 }
+
 
 void sortDescending()
 {

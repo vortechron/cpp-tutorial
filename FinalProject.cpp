@@ -1,36 +1,31 @@
 #include <iostream>
+#include <stdio.h>
 #include <string.h>
 #define SIZE 50
 
 using namespace std;
 
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
-
-struct senarai {
-	int keutamaan;
-	char kerja[200];
+struct task {
+	int priority;
+	char task[200];
 };
 
-senarai senaraiSaya[SIZE];
+task myTask[SIZE];
 
-void paparMenu();
+void displayMenu();
 int count();
-void papar(int index);
-void susunMenaik();
-void tukar(int x, int y);
+void displayTask(int index);
+void sortDescending();
+void swap(int x, int y);
+void addTask();
+void updateTask();
+void deleteTask();
+void searchTask();
 
 int main() {
 	
-	// print menu
-	// boleh choose dari menu
-	// choose 1: tambah
-	// choose 2: tolak
-	// choose 3: sort
-	// choose 4: search
-	// choose 5: 
-	
 	while (1) {
-		paparMenu();
+		displayMenu();
 		
 		int pilihan;
 		
@@ -39,102 +34,27 @@ int main() {
 		switch (pilihan) {
 			case 1:
 			{
-				char kerja[200];
-				int keutamaan;
-				
-				cin.clear();
-				cin.sync();
-				
-				printf("\n Masukkan Nama kerja (e.g. basuh pinggan):");
-				cin.getline(kerja, sizeof(kerja));
-				
-				printf("\n Masukkan keutamaan kerja (e.g. 7)");
-				scanf("%d", &keutamaan);
-				
-				for(int i = 0; i < SIZE; i++) {
-					if (senaraiSaya[i].keutamaan == 0) {
-						senaraiSaya[i].keutamaan = keutamaan;
-						strcpy(senaraiSaya[i].kerja, kerja);
-						break;
-					}
-				}
-				break;
+				addTask();
+                break;
 			}
 			case 2:
 			{
-			
-				int index = 0;
-				printf("\n Masukkan no. kerja untuk di edit: ");
-				scanf("%d", &index);
-				
-				char kerja1[200];
-				int keutamaan1;
-				
-				cin.clear();
-				cin.sync();
-				
-				printf("\n Masukkan Nama kerja (e.g. basuh pinggan):");
-				cin.getline(kerja1, sizeof(kerja1));
-				
-				printf("\n Masukkan keutamaan kerja (e.g. 7)");
-				scanf("%d", &keutamaan1);
-				
-				senaraiSaya[index - 1].keutamaan = keutamaan1;
-				strcpy(senaraiSaya[index - 1].kerja, kerja1);
-				
-				break;
+                updateTask();
+                break;
 			}
 			case 3:
 			{
-				int cari = 0;
-				printf("\n Masukkan no. kerja untuk di buang: ");
-				scanf("%d", &cari);
-				
-				cari = cari - 1;
-				
-				bool jumpaKe = false;
-				
-				for (int i = 0; i < SIZE; i++) {
-					
-					if (cari == i) {
-						senaraiSaya[i].keutamaan = 0;
-						strcpy(senaraiSaya[i].kerja, "");
-							
-						jumpaKe = true;
-					}
-					
-					if (jumpaKe == true && senaraiSaya[i].keutamaan != 0) {
-						senaraiSaya[i - 1].keutamaan = senaraiSaya[i].keutamaan;
-						strcpy(senaraiSaya[i - 1].kerja, senaraiSaya[i].kerja);
-						
-						senaraiSaya[i].keutamaan = 0;
-						strcpy(senaraiSaya[i].kerja, "");
-					}
-				}
-				
+				deleteTask();
 				break;
 			}
 			case 4:
 			{
-				int cari = 0;
-				printf("\n Masukkan no. kerja untuk di cari: ");
-				scanf("%d", &cari);
-				
-				cari = cari - 1;
-				
-				for (int i = 0; i < SIZE; i++) {
-					
-					if (cari == i) {
-						papar(i);
-						break;
-					}
-				}
-				
+                searchTask();
 				break;
 			}
 			case 5:
 			{
-				susunMenaik();
+				sortDescending();
 				break;
 			}
 				
@@ -144,33 +64,34 @@ int main() {
 	return 0;
 }
 
-void paparMenu() {
+void displayMenu()
+{
 	printf(
-		"\nKerja Saya\n"
-		"----------"
+		"\nMy Todo List\n"
+		"-------------"
 	);
 	
 	if (count() == 0) {
 		printf(
-			"\nTiada kerja lagi"
+			"\n~ your list is empty ~"
 		);
 	} else {
 		for(int i = 0; i < SIZE; i++) {
-			if (senaraiSaya[i].keutamaan == 0) {
+			if (myTask[i].priority == 0) {
 				break;
 			}
 			
-			printf("\n%d. %s", i + 1, senaraiSaya[i].kerja);
+			printf("\n%d. %s", i + 1, myTask[i].task);
 		}
 	}
 	
 	printf(
-		"\n\n\n ------------------\n 1. tambah kerja"
-		"\n 2. edit kerja"
-		"\n 3. delete kerja"
-		"\n 4. search kerja"
-		"\n 5. susun kerja"
-		"\n\n Pilihan anda: "
+		"\n\n\n ------------------\n 1. Add task"
+		"\n 2. Update task"
+		"\n 3. Delete task"
+		"\n 4. Search task"
+		"\n 5. Sort task"
+		"\n\n Your choice: "
 	);
 	
 	
@@ -179,7 +100,7 @@ void paparMenu() {
 int count(){
 	int counter = 0;
 	for(int i = 0; i < SIZE; i++) {
-		if (senaraiSaya[i].keutamaan == 0) {
+		if (myTask[i].priority == 0) {
 			break;
 		}
 		
@@ -189,45 +110,134 @@ int count(){
 	return counter;
 }
 
-void papar(int index) {
+void displayTask(int index) {
 	printf(
-		"\nKerja: %s"
-		"\nKeutamaan: %d",
-		senaraiSaya[index].kerja,
-		&senaraiSaya[index].keutamaan
+		"\nTask: %s"
+		"\nPriority: %d",
+		myTask[index].task,
+		&myTask[index].priority
 	);
 }
 
-void susunMenaik()
+void sortDescending()
 {
 	int first, second, index;
- 
-    // One by one move boundary of unsorted subarray
+
     for (first = 0; first < SIZE-1; first++)
     {
-    	if(senaraiSaya[first].keutamaan == 0){
+    	if(myTask[first].priority == 0){
     		break;
 		}
-		
-        // Find the minimum element in unsorted array
+
         index = first;
         for (second = first+1; second < SIZE; second++){
         	
-        	if(senaraiSaya[second].keutamaan == 0){
+        	if(myTask[second].priority == 0){
     			break;
 			}
 			
-        	if (senaraiSaya[second].keutamaan > senaraiSaya[index].keutamaan)
+        	if (myTask[second].priority > myTask[index].priority)
             	index = second;
 		}
-        // Swap the found minimum element with the first element
-        tukar(index, first);
+
+        swap(index, first);
     }
 }
 
-void tukar(int x, int y)
+void swap(int x, int y)
 {
-    senarai temp = senaraiSaya[x];
-    senaraiSaya[x] = senaraiSaya[y];
-    senaraiSaya[y] = temp;
+    task temp = myTask[x];
+    myTask[x] = myTask[y];
+    myTask[y] = temp;
+}
+
+void addTask()
+{
+    char task[200];
+    int priority;
+    
+    cin.clear();
+    cin.sync();
+    
+    printf("\n What is your task? (e.g. wash cloth) : ");
+    cin.getline(task, sizeof(task));
+    
+    printf("\n What is this task priority? (e.g. 7) : ");
+    scanf("%d", &priority);
+    
+    for(int i = 0; i < SIZE; i++) {
+        if (myTask[i].priority == 0) {
+            myTask[i].priority = priority;
+            strcpy(myTask[i].task, task);
+            break;
+        }
+    }
+}
+
+void updateTask()
+{
+    int index = 0;
+    printf("\n What task do you want to edit? (insert task number) : ");
+    scanf("%d", &index);
+    
+    char task[200];
+    int priority;
+    
+    cin.clear();
+    cin.sync();
+    
+    printf("\n Masukkan Nama task (e.g. basuh pinggan) :");
+    cin.getline(task, sizeof(task));
+
+    printf("\n Masukkan priority task (e.g. 7) :");
+    scanf("%d", &priority);
+    
+    myTask[index - 1].priority = priority;
+    strcpy(myTask[index - 1].task, task);
+}
+
+void deleteTask()
+{
+    int find = 0;
+    printf("\n Task numnber that you want to delete : ");
+    scanf("%d", &find);
+    
+    find = find - 1;
+    
+    bool found = false;
+    
+    for (int i = 0; i < SIZE; i++) {
+        
+        if (find == i) {
+            myTask[i].priority = 0;
+            strcpy(myTask[i].task, "");
+                
+            found = true;
+        }
+        
+        if (found == true && myTask[i].priority != 0) {
+            myTask[i - 1].priority = myTask[i].priority;
+            strcpy(myTask[i - 1].task, myTask[i].task);
+            
+            myTask[i].priority = 0;
+            strcpy(myTask[i].task, "");
+        }
+    }
+}
+
+void searchTask()
+{
+    int find = 0;
+    printf("\n Task that you want to find: ");
+    scanf("%d", &find);
+    
+    find = find - 1;
+    
+    for (int i = 0; i < SIZE; i++) {
+        
+        if (find == i) {
+            displayTask(i);
+            break;
+        }
+    }
 }

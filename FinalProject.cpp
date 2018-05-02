@@ -5,6 +5,8 @@
 
 using namespace std;
 
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
 struct task {
 	int priority;
 	char task[200];
@@ -21,6 +23,7 @@ void addTask();
 void updateTask();
 void deleteTask();
 void searchTask();
+task generateTask();
 
 int main() {
 	
@@ -153,22 +156,9 @@ void swap(int x, int y)
 
 void addTask()
 {
-    char task[200];
-    int priority;
-    
-    cin.clear();
-    cin.sync();
-    
-    printf("\n What is your task? (e.g. wash cloth) : ");
-    cin.getline(task, sizeof(task));
-    
-    printf("\n What is this task priority? (e.g. 7) : ");
-    scanf("%d", &priority);
-    
     for(int i = 0; i < SIZE; i++) {
         if (myTask[i].priority == 0) {
-            myTask[i].priority = priority;
-            strcpy(myTask[i].task, task);
+            myTask[i] = generateTask();
             break;
         }
     }
@@ -180,20 +170,7 @@ void updateTask()
     printf("\n What task do you want to edit? (insert task number) : ");
     scanf("%d", &index);
     
-    char task[200];
-    int priority;
-    
-    cin.clear();
-    cin.sync();
-    
-    printf("\n Masukkan Nama task (e.g. basuh pinggan) :");
-    cin.getline(task, sizeof(task));
-
-    printf("\n Masukkan priority task (e.g. 7) :");
-    scanf("%d", &priority);
-    
-    myTask[index - 1].priority = priority;
-    strcpy(myTask[index - 1].task, task);
+    myTask[index - 1] = generateTask();
 }
 
 void deleteTask()
@@ -240,4 +217,25 @@ void searchTask()
             break;
         }
     }
+}
+
+task generateTask()
+{
+	task temp;
+	char task[200];
+    int priority;
+    
+    cin.clear();
+    cin.sync();
+    
+    printf("\n What is your task? (e.g. wash cloth) : ");
+    cin.getline(task, sizeof(task));
+    
+    printf("\n What is this task priority? (e.g. 7) : ");
+    scanf("%d", &priority);
+    
+    temp.priority = priority;
+    strcpy(temp.task, task);
+    
+    return temp;
 }

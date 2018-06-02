@@ -1,241 +1,305 @@
-#include <iostream>
+#include <iostream> // to use cin or cout
+#include <stdlib.h> // general library
+#include <string.h> // to use string related function
 #include <stdio.h>
-#include <string.h>
-#define SIZE 50
 
 using namespace std;
 
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
-
-struct task {
-	int priority;
-	char task[200];
+struct task
+{
+	char name[100];
+	
+	struct extra{
+		int priority;
+	}info;
+	
+	struct task *next;
 };
 
-task myTask[SIZE];
+// initialize global variable
+task *head = NULL;
 
-void displayMenu();
-int count();
-void displayTask(int index);
+// Function prototype (declaration)
+void printMenu();
+void addBegin();
+void addEnd();
+void deleteBegin();
+void deleteEnd();
+void deleteAnywhere();
+void displayAllNode();
+void sortAscending();
 void sortDescending();
-void swap(int x, int y);
-void addTask();
-void updateTask();
-void deleteTask();
-void searchTask();
-task generateTask();
+task* createTask();
 
-int main() {
+int main(int argc, char** argv) {
 	
-	while (1) {
-		displayMenu();
-		
-		int pilihan;
-		
-		scanf("%d", &pilihan);
-		
-		switch (pilihan) {
+	int choice;
+	restart: while(1)
+	{
+		printMenu();
+
+		scanf("%d", &choice);
+
+		switch(choice)
+		{
 			case 1:
-			{
-				addTask();
-                break;
-			}
+				addEnd();
+				displayAllNode();
+				break;
 			case 2:
-			{
-                updateTask();
-                break;
-			}
+				deleteEnd();
+				displayAllNode();
+				break;
 			case 3:
-			{
-				deleteTask();
+				deleteAnywhere();
+				displayAllNode();
 				break;
-			}
 			case 4:
-			{
-                searchTask();
+				sortAscending();
+				displayAllNode();
 				break;
-			}
 			case 5:
-			{
 				sortDescending();
+				displayAllNode();
 				break;
-			}
-				
+			case 0:
+				printf("Thank you :)\nExiting...");
+				break;
+			default:
+				goto restart;
+				break;
+		}
+
+		if(choice == 0){
+			break;
 		}
 	}
 	
 	return 0;
 }
 
-void displayMenu()
+void printMenu()
 {
 	printf(
-		"\nMy Todo List\n"
-		"-------------"
+		"\nMenu\n"
+		"\n1. Add Task"
+		"\n2. Delete Task"
+		"\n3. Delete anywhere"
+		"\n4. Sort ascending"
+		"\n5. Sort descending"
+		"\n0. End"
+		"\n\nChoose a menu: "
 	);
-	
-	if (count() == 0) {
-		printf(
-			"\n~ your list is empty ~"
-		);
-	} else {
-		for(int i = 0; i < SIZE; i++) {
-			if (myTask[i].priority == 0) {
-				break;
-			}
-			
-			printf("\n%d. %s", i + 1, myTask[i].task);
-		}
-	}
-	
-	printf(
-		"\n\n\n ------------------\n 1. Add task"
-		"\n 2. Update task"
-		"\n 3. Delete task"
-		"\n 4. Search task"
-		"\n 5. Sort task"
-		"\n\n Your choice: "
-	);
-	
-	
 }
 
-int count(){
-	int counter = 0;
-	for(int i = 0; i < SIZE; i++) {
-		if (myTask[i].priority == 0) {
-			break;
-		}
+void displayAllNode()
+{
+	// always create temporary node
+	// and assign head ptr to it
+	task *temp = head;
+
+	printf("\n\nMy Todo List\n");
+
+	// then we traverse each node with temporary pointer but
+	// not head pointer. we dont want to touch/change head pointer
+	// the sole purpose of head pointer is to point at the first node.
+	// thats why we always assign head to new pointer
+    int counter = 0;
+	while(temp != NULL){
+        counter++;
+		printf("\n%d. %s | %d", counter, temp->name, temp->info.priority);
+
+		temp = temp->next;
+	}
+
+    if (counter == 0) {
+        printf("~~ Your list is empty ~~");
+    }
+
+    printf("\n\n");
+}
+
+void addBegin()
+{
+	// create new pointer that point to empty node
+	task *newNode = createTask();
+
+	// this will put new node at the front
+	newNode->next = head;
+
+	// we need to re-point head back into the 
+	// first node. this is important or else our head will 
+	// disorder
+	head = newNode;
+}
+
+void addEnd()
+{
+	// we do a simple check to see if our head is empty
+	if(head == NULL){
+		addBegin();
+		return;
+	}
+	
+	task *temp = head;
+	task *newNode = createTask();
+	
+	newNode->next = NULL;
+
+	// else we will traverse each nodes with temporary ptn
+	// and check: if it reach last node then assign new node to it next ptr
+	while(temp->next != NULL){
+		temp = temp->next;
+	}
+	
+	temp->next = newNode;
+}
+
+void deleteBegin()
+{
+	// do a simple check to see:
+	// if our nodes is empty then exit function
+	if(head == NULL){
+		return;
+	}
+
+	task *temp = head;
+
+	// else move head to next node
+	head = temp->next;
+	
+	// deallocate
+	free(temp);
+}
+
+void deleteEnd()
+{
+	task *temp = head;
+
+	// simple check to see if node if empty adn exit this function
+	if(head == NULL){
+		return;
+	}
+
+	// else if only has one node, call delete begin function
+	if(temp->next == NULL){
+		deleteBegin();
+		return;
+	}
+
+	// else traverse each node but skip last node.
+	while(temp->next->next!=NULL){
+	    temp = temp->next;
+	}
+
+	// this will remove last node from the list
+	temp->next = NULL;
+}
+
+void deleteAnywhere()
+{
+	if(head == NULL){
+		return;
+	}
+
+    task *temp = head->next;
+	task *prev = head;
+    int target;
+
+	// get the name of task that we want to delete
+	printf("Insert task number that you want to delete: ");
+	scanf("%d", &target);
+	
+    int counter = 1;
+    
+    if (target == 1) {
+        printf("Task found and deleted!\n");
+        deleteBegin();
+        return;
+	}
+
+    // traverse each node and do the check
+	while(temp != NULL){
+        counter++;
+
+        if (counter == target) {
+            printf("Task found and deleted!\n");
+			prev->next = temp->next;
+			return;
+        }
 		
-		counter++;
+		prev = temp;
+		temp = temp->next;
 	}
 	
-	return counter;
+	printf("Task not found\n");
 }
 
-void displayTask(int index) {
-	printf(
-		"\nTask: %s"
-		"\nPriority: %d",
-		myTask[index].task,
-		&myTask[index].priority
-	);
+void sortAscending()
+{
+    task *i = head,*j =head;
+
+	// i is to loop for n-number of node only
+    while(i!=NULL){
+    	// j is to loop or each loop and compare it with the next node
+        while(j->next!=NULL){
+            if(j->info.priority > j->next->info.priority){
+            	// swap the data if prev is larger than next
+            	task temp = *j;
+            	
+                j->info.priority = j->next->info.priority;
+                strcpy(j->name, j->next->name);
+                
+                j->next->info.priority = temp.info.priority;
+                strcpy(j->next->name, temp.name);
+            }
+            j=j->next;
+        }
+        j=head;
+        i=i->next;
+    }
 }
+
 
 void sortDescending()
 {
-	int first, second, index;
-
-    for (first = 0; first < SIZE-1; first++)
-    {
-    	if(myTask[first].priority == 0){
-    		break;
-		}
-
-        index = first;
-        for (second = first+1; second < SIZE; second++){
-        	
-        	if(myTask[second].priority == 0){
-    			break;
-			}
-			
-        	if (myTask[second].priority > myTask[index].priority)
-            	index = second;
-		}
-
-        swap(index, first);
-    }
-}
-
-void swap(int x, int y)
-{
-    task temp = myTask[x];
-    myTask[x] = myTask[y];
-    myTask[y] = temp;
-}
-
-void addTask()
-{
-    for(int i = 0; i < SIZE; i++) {
-        if (myTask[i].priority == 0) {
-            myTask[i] = generateTask();
-            break;
-        }
-    }
-}
-
-void updateTask()
-{
-    int index = 0;
-    printf("\n What task do you want to edit? (insert task number) : ");
-    scanf("%d", &index);
-    
-    myTask[index - 1] = generateTask();
-}
-
-void deleteTask()
-{
-    int find = 0;
-    printf("\n Task numnber that you want to delete : ");
-    scanf("%d", &find);
-    
-    find = find - 1;
-    
-    bool found = false;
-    
-    for (int i = 0; i < SIZE; i++) {
-        
-        if (find == i) {
-            myTask[i].priority = 0;
-            strcpy(myTask[i].task, "");
+    task *i = head,*j =head;
+	
+    while(i!=NULL){
+        while(j->next!=NULL){
+            if(j->info.priority < j->next->info.priority){
+            	task temp = *j;
+            	
+                j->info.priority = j->next->info.priority;
+                strcpy(j->name, j->next->name);
                 
-            found = true;
+                j->next->info.priority = temp.info.priority;
+                strcpy(j->next->name, temp.name);
+            }
+            j=j->next;
         }
-        
-        if (found == true && myTask[i].priority != 0) {
-            myTask[i - 1].priority = myTask[i].priority;
-            strcpy(myTask[i - 1].task, myTask[i].task);
-            
-            myTask[i].priority = 0;
-            strcpy(myTask[i].task, "");
-        }
+        j=head;
+        i=i->next;
     }
 }
 
-void searchTask()
+task* createTask()
 {
-    int find = 0;
-    printf("\n Task that you want to find: ");
-    scanf("%d", &find);
-    
-    find = find - 1;
-    
-    for (int i = 0; i < SIZE; i++) {
-        
-        if (find == i) {
-            displayTask(i);
-            break;
-        }
-    }
-}
-
-task generateTask()
-{
-	task temp;
-	char task[200];
-    int priority;
-    
-    cin.clear();
+	char name[200];
+	cin.clear();
     cin.sync();
     
-    printf("\n What is your task? (e.g. wash cloth) : ");
-    cin.getline(task, sizeof(task));
-    
-    printf("\n What is this task priority? (e.g. 7) : ");
-    scanf("%d", &priority);
-    
-    temp.priority = priority;
-    strcpy(temp.task, task);
-    
-    return temp;
+    // create new pointer that point to empty node
+	task *newNode = (task *) malloc(sizeof(task));
+
+	// then we assign name into empty node
+	printf("\nWhat is your task? (e.g. wash cloth) : ");
+	cin.getline(name, sizeof(name));
+	
+	printf("What is this task priority: ");
+	scanf("%d", &newNode->info.priority);
+	
+	strcpy(newNode->name, name);
+
+    return newNode;
 }

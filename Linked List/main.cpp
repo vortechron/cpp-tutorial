@@ -290,6 +290,12 @@ void deleteRecursively(student *prev, student *temp, char searchedName[])
 
 void deleteTraversaly(student *prev, student *temp, char searchedName[])
 {
+	if(strcmp(searchedName, prev->name) == 0){
+		printf("Student found and deleted!\n");
+		deleteBegin();
+		return;
+	}
+	
 	// traverse each node and do the check
 	while(temp != NULL){
 		if(strcmp(searchedName, temp->name) == 0){
